@@ -1,7 +1,22 @@
 <script lang="ts">
 import { reactive, ref } from "vue";
 
-const defaultFormValue = {
+// Define types for form and grid
+interface FormType {
+  rows: number;
+  columns: number;
+  gap: number;
+}
+
+interface GridType {
+  rows: number;
+  columns: number;
+  gap: number;
+  rowSpan: number[];
+  colSpan: number[];
+}
+
+const defaultFormValue: FormType = {
   rows: 3,
   columns: 3,
   gap: 10,
@@ -11,50 +26,50 @@ export default {
   name: "GridGenerator",
   setup() {
     // Reactive form state
-    const form = reactive(defaultFormValue);
-    // document.body.classList.add("bg-slate-100");
-    // Reactive grid object with rowSpan and colSpan for each item
-    const grid = reactive({
+    const form = reactive<FormType>({ ...defaultFormValue });
+
+    // Reactive grid state
+    const grid = reactive<GridType>({
       rows: form.rows,
       columns: form.columns,
       gap: form.gap,
-      rowSpan: Array.from({ length: form.rows }, () => 1), // Default rowSpan = 1
-      colSpan: Array.from({ length: form.rows }, () => 1), // Default colSpan = 1
+      rowSpan: Array.from({ length: form.rows }, () => 1),
+      colSpan: Array.from({ length: form.rows }, () => 1),
     });
 
-    const open = ref<number | null>(null); // Tracks the currently selected item for editing
-    const copySuccess = ref(false); // Tracks if copy was successful
-    // Update grid when form values change
+    const open = ref<number | null>(null);
+    const copySuccess = ref(false);
+
+    // Update grid state when form values change
     const updateGrid = () => {
       grid.rows = form.rows;
       grid.columns = form.columns;
       grid.gap = form.gap;
 
-      // Adjust rowSpan and colSpan arrays when the number of rows changes
-      grid.rowSpan = Array.from(
-        { length: form.rows },
-        (_, i) => grid.rowSpan[i] || 1
-      );
-      grid.colSpan = Array.from(
-        { length: form.rows },
-        (_, i) => grid.colSpan[i] || 1
-      );
+      // Dynamically adjust rowSpan and colSpan lengths
+      while (grid.rowSpan.length < form.rows) grid.rowSpan.push(1);
+      while (grid.colSpan.length < form.rows) grid.colSpan.push(1);
+      grid.rowSpan.length = form.rows;
+      grid.colSpan.length = form.rows;
     };
 
     // Generate HTML preview dynamically
-    const generateHTML = () => {
+    const generateHTML = (): string => {
       const rows = Array.from({ length: form.rows }, (_, i) => {
-        return `  <div class="${
-          grid.rowSpan[i] > 1 ? "row-span-" + grid.rowSpan[i] : ""
-        } ${grid.colSpan[i] > 1 ? "col-span-" + grid.colSpan[i] : ""}">Row ${
-          i + 1
-        }</div>`;
+        const rowClass = [
+          grid.rowSpan[i] > 1 ? `row-span-${grid.rowSpan[i]}` : "",
+          grid.colSpan[i] > 1 ? `col-span-${grid.colSpan[i]}` : "",
+        ]
+          .filter(Boolean)
+          .join(" ");
+        return `  <div class="${rowClass}">Row ${i + 1}</div>`;
       }).join("\n");
+
       return `<div class="grid grid-cols-${form.columns} gap-${form.gap}">\n${rows}\n</div>`;
     };
 
     const showRowSpan = (index: number) => {
-      open.value = open.value === index ? null : index; // Toggle open item
+      open.value = open.value === index ? null : index;
     };
 
     // Copy generated HTML to clipboard
@@ -63,8 +78,6 @@ export default {
         const html = generateHTML();
         await navigator.clipboard.writeText(html);
         copySuccess.value = true;
-
-        // Reset success message after 2 seconds
         setTimeout(() => {
           copySuccess.value = false;
         }, 2000);
@@ -166,17 +179,26 @@ export default {
           <div
             v-for="(row, index) in form.rows"
             :key="index"
-            :class="`border rounded-sm p-4 row-span-${
-              grid.rowSpan[index]
-            } col-span-${grid.colSpan[index]} ${
-              index === open ? 'shadow-md shadow-slate-400' : ''
-            }`"
+            :class="
+              [
+                'border rounded-sm p-4 ',
+                open === index ? 'shadow-md shadow-slate-400' : '',
+                grid.rowSpan[index] > 1
+                  ? `row-span-${grid.rowSpan[index]}`
+                  : '',
+                grid.colSpan[index] > 1
+                  ? `col-span-${grid.colSpan[index]}`
+                  : '',
+              ]
+                .filter(Boolean)
+                .join(' ')
+            "
             @click="showRowSpan(index)"
           >
             Row {{ index + 1 }}
           </div>
         </div>
-        <h3 class="text-xl my-4">HTML Code to copy</h3>
+        <h3 class="text-xl my-4">HTML Code to Copy</h3>
         <div
           class="bg-slate-50 p-4 border text-sm border-slate-300 relative rounded-sm"
         >
@@ -184,10 +206,9 @@ export default {
           <button
             @click="copyToClipboard"
             :disabled="copySuccess"
-            class="text-gray-900 rounded-bl-lg bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium text-xs px-3 py-2 text-center inline-flex items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 dark:text-gray-900 dark:hover:bg-gray-200 absolute top-0 right-0"
+            class="absolute top-0 right-0 p-2 bg-gray-200 hover:bg-gray-300 rounded-bl-md hover:shadow-sm"
           >
-            <templage v-if="copySuccess">Copied to clipboard!</templage>
-            <templalte v-else> Copy HTML</templalte>
+            {{ copySuccess ? "Copied!" : "Copy HTML" }}
           </button>
         </div>
       </div>
@@ -195,6 +216,4 @@ export default {
   </div>
 </template>
 
-<style scoped>
-/* Optional styling */
-</style>
+<style scoped></style>
