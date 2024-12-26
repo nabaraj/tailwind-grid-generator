@@ -1,6 +1,9 @@
-# tailwind-grid
+### Tailwind Grid Generator - Features
 
-This template should help get you started developing with Vue 3 in Vite.
+- **Add Rows, Columns, and Gap**: Easily configure the grid layout with customizable row, column, and gap settings.
+- **Copy HTML**: Generate and copy the HTML structure for your grid directly.
+- **Visual Updates**: Preview changes in real-time as you configure your grid.
+- **Editable Grid Items**: Update individual grid items with custom row and column spans.
 
 ## Recommended IDE Setup
 
