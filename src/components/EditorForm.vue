@@ -115,7 +115,7 @@ export default {
               type="number"
               id="columnGrid"
               v-model="form.columns"
-              class="border rounded p-2 bg-slate-200"
+              class="border rounded p-2 bg-stone-200"
             />
           </div>
           <div>
@@ -126,7 +126,7 @@ export default {
               type="number"
               id="rowGrid"
               v-model="form.rows"
-              class="border rounded p-2 bg-slate-200"
+              class="border rounded p-2 bg-stone-200"
             />
           </div>
           <div>
@@ -135,7 +135,7 @@ export default {
               type="number"
               id="gap"
               v-model="form.gap"
-              class="border rounded p-2 bg-slate-200"
+              class="border rounded p-2 bg-stone-200"
             />
           </div>
 
@@ -155,7 +155,7 @@ export default {
                 type="number"
                 id="rowspan"
                 v-model="grid.rowSpan[open]"
-                class="border rounded p-2 w-full bg-slate-200"
+                class="border rounded p-2 w-full bg-stone-200"
               />
             </div>
             <div>
@@ -166,7 +166,7 @@ export default {
                 type="number"
                 id="colspan"
                 v-model="grid.colSpan[open]"
-                class="border rounded p-2 w-full bg-slate-200"
+                class="border rounded p-2 w-full bg-stone-200"
               />
             </div>
           </div>
@@ -181,7 +181,7 @@ export default {
             :key="index"
             :class="
               [
-                'border rounded-sm p-4 bg-slate-200 ',
+                'border rounded-sm p-4 bg-stone-200 ',
                 open === index ? 'shadow-md shadow-slate-400' : '',
                 grid.rowSpan[index] > 1
                   ? `row-span-${grid.rowSpan[index]}`
@@ -200,7 +200,7 @@ export default {
         </div>
         <h3 class="text-xl my-4">HTML Code to Copy</h3>
         <div
-          class="bg-slate-200 p-4 border text-sm border-slate-300 relative rounded-sm"
+          class="bg-stone-200 p-4 border text-sm border-slate-300 relative rounded-sm"
         >
           <pre>{{ generateHTML() }}</pre>
           <button
