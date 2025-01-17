@@ -200,7 +200,7 @@ export default {
         </div>
         <h3 class="text-xl my-4">HTML Code to Copy</h3>
         <div
-          class="bg-slate-50 p-4 border text-sm border-slate-300 relative rounded-sm"
+          class="bg-slate-200 p-4 border text-sm border-slate-300 relative rounded-sm"
         >
           <pre>{{ generateHTML() }}</pre>
           <button
