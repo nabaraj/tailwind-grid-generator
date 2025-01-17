@@ -62,7 +62,7 @@ export default {
         ]
           .filter(Boolean)
           .join(" ");
-        return `  <div class="${rowClass}">Box ${i + 1}</div>`;
+        return `  <div class="${rowClass}">Grid Item ${i + 1}</div>`;
       }).join("\n");
 
       return `<div class="grid grid-cols-${form.columns} gap-${form.gap}">\n${rows}\n</div>`;
@@ -195,7 +195,7 @@ export default {
             "
             @click="showRowSpan(index)"
           >
-            Box {{ index + 1 }}
+            Grid Item {{ index + 1 }}
           </div>
         </div>
         <h3 class="text-xl my-4">HTML Code to Copy</h3>
