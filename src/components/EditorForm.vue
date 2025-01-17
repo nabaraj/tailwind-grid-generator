@@ -181,7 +181,7 @@ export default {
             :key="index"
             :class="
               [
-                'border rounded-sm p-4 ',
+                'border rounded-sm p-4 bg-white ',
                 open === index ? 'shadow-md shadow-slate-400' : '',
                 grid.rowSpan[index] > 1
                   ? `row-span-${grid.rowSpan[index]}`
