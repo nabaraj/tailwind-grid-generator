@@ -10,7 +10,7 @@ import EditorForm from "./components/EditorForm.vue";
 
 <style scoped>
 .main{
-  background: url('@/assets/grid.jpg') repeat 0 0;
+  background: url('@/assets/grid.webp') repeat 0 0;
   background-size: 50%;
 }
 </style>
