@@ -196,7 +196,9 @@ export default {
             @click="showRowSpan(index)"
           >
             Grid Item {{ index + 1 }}
+            <span class="text-xs block">Click on the grid items to add row and col span</span>
           </div>
+          
         </div>
         <h3 class="text-xl my-4">HTML Code to Copy</h3>
         <div
