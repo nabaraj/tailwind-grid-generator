@@ -1,35 +1,40 @@
 ### Tailwind Grid Generator - Features
 
-- **Add Rows, Columns, and Gap**: Easily configure the grid layout with customizable row, column, and gap settings.
-- **Copy HTML**: Generate and copy the HTML structure for your grid directly.
-- **Visual Updates**: Preview changes in real-time as you configure your grid.
-- **Editable Grid Items**: Update individual grid items with custom row and column spans.
+- **Flexible Grid Configuration**: Easily customize rows, columns, and gap settings to design your grid layout.
+- **Responsive Design Support**: Adjust grid settings for different screen sizes using Tailwind’s responsive utilities.
+- **One-Click HTML Copy**: Generate and copy the grid’s HTML structure effortlessly.
+- **Live Preview**: Instantly see your changes as you tweak the grid settings.
+- **Editable Grid Items**: Modify individual grid items by adjusting row and column spans.
+
+![](./screenshot.png)
 
 ## Recommended IDE Setup
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Use [VSCode](https://code.visualstudio.com/) with [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (disable Vetur for better compatibility).
 
-## Type Support for `.vue` Imports in TS
+## Type Support for `.vue` Imports in TypeScript
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+Since TypeScript doesn’t natively support `.vue` imports, we replace `tsc` with `vue-tsc` for type checking. To enable proper TypeScript support in editors, install [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar).
 
-## Customize configuration
+## Customizing Configuration
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+For advanced configuration options, refer to the [Vite Configuration Reference](https://vite.dev/config/).
 
 ## Project Setup
+
+Install dependencies:
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Run Development Server
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### Build for Production
 
 ```sh
 npm run build
