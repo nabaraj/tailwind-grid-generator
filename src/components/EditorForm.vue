@@ -1,5 +1,6 @@
 <script lang="ts">
 import { reactive, ref } from "vue";
+
 enum BreakPoints {
   sm = "sm",
   md = "md",
@@ -41,7 +42,8 @@ export default {
   setup() {
     // Reactive form state
     const form = reactive<FormType>({ ...defaultFormValue });
-    const selectedResponsive = ref<BreakPoints>(BreakPoints.sm)
+    const selectedResponsive = ref<BreakPoints>(BreakPoints.sm);
+
     // Reactive grid state
     const grid = reactive<GridType>({
       rows: form.rows,
@@ -54,41 +56,46 @@ export default {
     const open = ref<number | null>(null);
     const copySuccess = ref(false);
     const getResponsiveClass = () => {
-      // Object.keys(form.responsive).reduce((viewPort, acc)=>{
-      //   if(viewPort===responsive)
-      // },'')
+      const mobileViewValue = form.responsive[BreakPoints.sm];
+      let classes = Object.keys(form.responsive).reduce((classNames, breakPoint) => {
+        if (breakPoint === BreakPoints.sm) {
+          classNames = classNames + `grid-cols-${mobileViewValue}`
+        }
+        if (breakPoint !== BreakPoints.sm && form.responsive[breakPoint as keyof Responsive] !== mobileViewValue) {
+          classNames = classNames + ` ${breakPoint}:grid-cols-${form.responsive[breakPoint as keyof Responsive]}`
+        }
+        console.log({ classNames })
+        return classNames;
+      }, '')
+      return classes
     }
     // Update grid state when form values change
     const updateGrid = (event: Event) => {
-
+      console.log('updateGrid', event);
 
       const target = event.target as HTMLInputElement;
-      if (!target) return; // Ensuring target exists before proceeding
+      if (!target) return;
 
       const targetName = target.name;
-      console.log('updateGrid', targetName);
+
       if (targetName === 'responsive') {
-        const responsiveValue = target.value;
+        const responsiveValue = target.value as keyof Responsive; // ✅ Ensure valid index
         selectedResponsive.value = responsiveValue as BreakPoints;
+
         console.log(form.responsive);
 
-        if (!form.responsive[responsiveValue as keyof typeof form.responsive]) {
-          form.responsive[responsiveValue as keyof typeof form.responsive] = defaultFormValue.columns;
+        if (!form.responsive[responsiveValue]) {
+          form.responsive[responsiveValue] = defaultFormValue.columns;
         }
-
-      }
-      if (targetName === 'columnGrid') {
-        console.log(form.responsive[selectedResponsive.value])
-        form.responsive[selectedResponsive.value] = form.columns
       }
 
       grid.rows = form.rows;
-      // grid.columns = form.columns;
+      grid.columns = form.columns;
       grid.gap = form.gap;
 
       // Dynamically adjust rowSpan and colSpan lengths
       while (grid.rowSpan.length < form.rows) grid.rowSpan.push(1);
-      while (grid.colSpan.length < form.columns) grid.colSpan.push(1); // Updated from form.rows
+      while (grid.colSpan.length < form.columns) grid.colSpan.push(1);
 
       grid.rowSpan.length = form.rows;
       grid.colSpan.length = form.columns; // Updated from form.rows
@@ -107,7 +114,7 @@ export default {
         return `  <div class="${rowClass}">Grid Item ${i + 1}</div>`;
       }).join("\n");
 
-      return `<div class="grid grid-cols-${form.columns} gap-${form.gap}">\n${rows}\n</div>`;
+      return `<div class="grid ${getResponsiveClass()} gap-${form.gap}">\n${rows}\n</div>`;
     };
 
     const showRowSpan = (index: number) => {
@@ -138,7 +145,9 @@ export default {
       showRowSpan,
       copyToClipboard,
       selectedResponsive,
-      BreakPoints
+      BreakPoints,
+      getResponsiveClass
+
     };
   },
 };
@@ -151,16 +160,18 @@ export default {
       <!-- Form Section -->
       <div>
         <form class="grid grid-cols-1 md:grid-cols-3 gap-2" @input="updateGrid">
-          <div class="w-full col-span-3">
+          <div class="col-span-1 md:col-span-3">
             <label for="responsive" class="block">Responsive Width</label>
-            <select name="responsive" id="responsive">
-              <option :value="bp" :key="bp" v-for="bp in Object.values(BreakPoints)">{{ bp.toUpperCase() }}</option>
+            <select name="responsive" id="responsive" class="border rounded p-2 bg-stone-200"
+              v-model="selectedResponsive">
+              <option v-for="bp in Object.values(BreakPoints)" :key="bp" :value="bp">
+                {{ bp }}
+              </option>
             </select>
-            {{ form.responsive }}
           </div>
-          <div>
+          <div class="col-span-1 md:col-span-1">
             <label for="columnGrid" class="block mb-2 text-sm font-medium">Columns</label>
-            <input type="number" id="columnGrid" name="columnGrid" v-model="form.responsive[selectedResponsive]"
+            <input type="number" id="columnGrid" v-model="form.responsive[selectedResponsive as keyof Responsive]"
               class="border rounded p-2 bg-stone-200" />
           </div>
           <div>
@@ -191,7 +202,7 @@ export default {
 
       <!-- Grid Preview -->
       <div>
-        <div :class="`grid grid-cols-${form.columns} gap-${form.gap}`">
+        <div :class="`grid ${getResponsiveClass()} gap-${form.gap}`">
           <div v-for="(row, index) in form.rows" :key="index" :class="[
             'border rounded-sm p-4 bg-stone-200 ',
             open === index ? 'shadow-md shadow-slate-400' : '',
@@ -211,8 +222,8 @@ export default {
 
         </div>
         <h3 class="text-xl my-4">HTML Code to Copy</h3>
-        <div class="bg-stone-200 p-4 border text-sm border-slate-300 relative rounded-sm">
-          <pre>{{ generateHTML() }}</pre>
+        <div class="bg-stone-200 text-wrap break-words p-4 border text-sm border-slate-300 relative rounded-sm">
+          <pre class="text-wrap break-words">{{ generateHTML() }}</pre>
           <button @click="copyToClipboard" :disabled="copySuccess"
             class="absolute top-0 right-0 p-2 bg-gray-200 hover:bg-gray-300 rounded-bl-md hover:shadow-sm">
             {{ copySuccess ? "Copied!" : "Copy HTML" }}
@@ -222,5 +233,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style scoped></style>

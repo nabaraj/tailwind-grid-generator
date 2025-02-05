@@ -1,26 +1,30 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  // purge: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+module.exports = {
+  content: [
+    './public/**/*.html',
+    './src/**/*.{js,jsx,ts,tsx,vue}'
+  ],
+
   safelist: [
     {
-      pattern: /grid-cols-./
+      pattern: /^grid-cols-\d+$/, // Matches grid-cols-1 to grid-cols-12+
+      variants: ["sm", "md", "lg", "xl", "2xl"], // Adds responsive versions
     },
     {
-      pattern: /border/
+      pattern: /^gap-\d+$/, // Matches gap-1, gap-2, gap-3, etc.
+      variants: ["sm", "md", "lg", "xl", "hover"], // Adds responsive and hover support
     },
     {
-      pattern: /gap-/
+      pattern: /^row-span-\d+$/, // Matches row-span-1, row-span-2, etc.
     },
-    { pattern: /row-span-/ },
-    { pattern: /col-span-/ }
+    {
+      pattern: /^col-span-\d+$/, // Matches col-span-1, col-span-2, etc.
+    },
+    {
+      pattern: /^border$/, // Ensures border class is available
+    }
   ],
-  content: [
-    // Example content paths...
-    "./public/**/*.html",
-    "./src/**/*.{js,jsx,ts,tsx,vue}"
-  ],
-  theme: {
-    extend: {}
-  },
-  plugins: []
+
+  theme: { extend: {} },
+  plugins: [],
 };
