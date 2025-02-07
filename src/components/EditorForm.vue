@@ -212,7 +212,7 @@ export default {
       </div>
 
       <!-- Grid Preview -->
-      <div>
+      <div class="pb-20">
         <div :class="`grid ${getResponsiveClass()} gap-${form.gap}`">
           <div v-for="(row, index) in form.rows" :key="index" :class="[
             'border rounded-sm p-4 bg-stone-200 ',
