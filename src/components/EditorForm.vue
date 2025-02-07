@@ -156,7 +156,7 @@ export default {
 
 <template>
   <div class="container px-10 mx-auto">
-    <h3 class="text-center my-5 text-2xl">Tailwind Grid Generator{{ toggleHtml }}</h3>
+    <h3 class="text-center my-5 text-2xl">Tailwind Grid Generator</h3>
     <button @click="() => toggleHtml = !toggleHtml"
       class="z-20 md:hidden fixed right-0 border-l border-t border-b border-slate-300 p-2 rounded-lt-3 rounded-l-md top-10"><span
         class="sr-only">Open main
