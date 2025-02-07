@@ -43,6 +43,7 @@ export default {
     // Reactive form state
     const form = reactive<FormType>({ ...defaultFormValue });
     const selectedResponsive = ref<BreakPoints>(BreakPoints.sm);
+    const toggleHtml = ref<boolean>(false)
 
     // Reactive grid state
     const grid = reactive<GridType>({
@@ -146,8 +147,8 @@ export default {
       copyToClipboard,
       selectedResponsive,
       BreakPoints,
-      getResponsiveClass
-
+      getResponsiveClass,
+      toggleHtml
     };
   },
 };
@@ -155,7 +156,17 @@ export default {
 
 <template>
   <div class="container px-10 mx-auto">
-    <h3 class="text-center my-5 text-2xl">Tailwind Grid Generator</h3>
+    <h3 class="text-center my-5 text-2xl">Tailwind Grid Generator{{ toggleHtml }}</h3>
+    <button @click="() => toggleHtml = !toggleHtml"
+      class="z-20 md:hidden fixed right-0 border-l border-t border-b border-slate-300 p-2 rounded-lt-3 rounded-l-md top-10"><span
+        class="sr-only">Open main
+        menu</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-code-slash"
+        viewBox="0 0 16 16">
+        <path
+          d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0m6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0" />
+      </svg>
+    </button>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <!-- Form Section -->
       <div>
@@ -184,7 +195,7 @@ export default {
           </div>
 
           <!-- RowSpan and ColSpan Editing -->
-          <div v-if="open !== null" class="col-span-2 grid grid-cols-2 gap-2 py-4 relative">
+          <div v-if="open !== null" class="col-span-1 md:col-span-2 w-full grid grid-cols-2 gap-2 py-4 relative">
             <span class="absolute right-0 cursor-pointer" @click="open = null">X</span>
             <div>
               <label for="rowspan" class="block mb-2 text-sm font-medium">Row Span</label>
@@ -221,14 +232,19 @@ export default {
           </div>
 
         </div>
-        <h3 class="text-xl my-4">HTML Code to Copy</h3>
-        <div class="bg-stone-200 text-wrap break-words p-4 border text-sm border-slate-300 relative rounded-sm">
-          <pre class="text-wrap break-words">{{ generateHTML() }}</pre>
-          <button @click="copyToClipboard" :disabled="copySuccess"
-            class="absolute top-0 right-0 p-2 bg-gray-200 hover:bg-gray-300 rounded-bl-md hover:shadow-sm">
-            {{ copySuccess ? "Copied!" : "Copy HTML" }}
-          </button>
+        <div
+          :class="`fixed md:static top-0 w-full transition-all duration-300 ease-in-out 
+    ${toggleHtml ? 'translate-x-0 left-0' : 'translate-x-full md:translate-x-0 left-[100%]'} bg-white md:bg-transparent p-5 md:p-0 h-full z-10`">
+          <h3 class="text-xl my-4">HTML Code to Copy</h3>
+          <div class="bg-stone-200 text-wrap break-words p-4 border relative text-sm border-slate-300 rounded-sm">
+            <pre class="text-wrap break-words">{{ generateHTML() }}</pre>
+            <button @click="copyToClipboard" :disabled="copySuccess"
+              class="absolute top-0 right-0 p-2 bg-gray-200 hover:bg-gray-300 rounded-bl-md hover:shadow-sm">
+              {{ copySuccess ? "Copied!" : "Copy HTML" }}
+            </button>
+          </div>
         </div>
+
       </div>
     </div>
   </div>
