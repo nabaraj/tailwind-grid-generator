@@ -1,5 +1,5 @@
 <script lang="ts">
-import { reactive, ref } from "vue";
+import { reactive, ref, watch } from "vue";
 
 enum BreakPoints {
   sm = "sm",
@@ -51,7 +51,7 @@ export default {
       columns: form.columns,
       gap: form.gap,
       rowSpan: Array.from({ length: form.rows }, () => 1),
-      colSpan: Array.from({ length: form.rows }, () => 1),
+      colSpan: Array.from({ length: form.columns }, () => 1),
     });
 
     const open = ref<number | null>(null);
@@ -94,13 +94,28 @@ export default {
       grid.columns = form.columns;
       grid.gap = form.gap;
 
-      // Dynamically adjust rowSpan and colSpan lengths
-      while (grid.rowSpan.length < form.rows) grid.rowSpan.push(1);
-      while (grid.colSpan.length < form.columns) grid.colSpan.push(1);
+      // Ensure new elements have a default colSpan value
+      while (grid.colSpan.length < form.rows) {
+        grid.colSpan.push(1);
+      }
+      while (grid.colSpan.length > form.rows) {
+        grid.colSpan.pop();
+      }
 
-      grid.rowSpan.length = form.rows;
-      grid.colSpan.length = form.columns; // Updated from form.rows
+      // Ensure new elements have a default rowSpan value
+      while (grid.rowSpan.length < form.rows) {
+        grid.rowSpan.push(1);
+      }
+      while (grid.rowSpan.length > form.rows) {
+        grid.rowSpan.pop();
+      }
+
+      // Trigger Vue reactivity
+      grid.colSpan = [...grid.colSpan];
+      grid.rowSpan = [...grid.rowSpan];
     };
+
+
 
 
     // Generate HTML preview dynamically
@@ -120,7 +135,57 @@ export default {
 
     const showRowSpan = (index: number) => {
       open.value = open.value === index ? null : index;
+
+      // Trigger reactivity by updating the entire array
+      grid.colSpan = [...grid.colSpan];
+      grid.rowSpan = [...grid.rowSpan];
     };
+
+
+
+    watch(
+      () => grid.columns,
+      (columns) => {
+
+        while (columns > grid.colSpan.length) {
+          grid.colSpan.push(1); // Ensure new columns get a default span of 1
+        }
+        while (columns < grid.colSpan.length) {
+          grid.colSpan.pop(); // Remove extra columns when decreased
+        }
+      },
+      { deep: true }
+    );
+
+    watch(
+      () => form.rows,
+      (newRows) => {
+        console.log(`Rows updated: ${newRows}`);
+
+        // Ensure colSpan array has the correct number of elements
+        while (grid.colSpan.length < newRows) {
+          grid.colSpan.push(1);  // Add default colSpan
+        }
+        while (grid.colSpan.length > newRows) {
+          grid.colSpan.pop();  // Remove extra colSpan
+        }
+
+        // Ensure rowSpan array has the correct number of elements
+        while (grid.rowSpan.length < newRows) {
+          grid.rowSpan.push(1);  // Add default rowSpan
+        }
+        while (grid.rowSpan.length > newRows) {
+          grid.rowSpan.pop();  // Remove extra rowSpan
+        }
+
+        // Update arrays to trigger reactivity
+        grid.colSpan = [...grid.colSpan];
+        grid.rowSpan = [...grid.rowSpan];
+      },
+      { immediate: true }
+    );
+
+
 
     // Copy generated HTML to clipboard
     const copyToClipboard = async () => {
