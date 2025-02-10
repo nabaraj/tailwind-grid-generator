@@ -74,22 +74,6 @@ export default {
     const updateGrid = (event: Event) => {
       console.log('updateGrid', event);
 
-      const target = event.target as HTMLInputElement;
-      if (!target) return;
-
-      const targetName = target.name;
-
-      if (targetName === 'responsive') {
-        const responsiveValue = target.value as keyof Responsive; // ✅ Ensure valid index
-        selectedResponsive.value = responsiveValue as BreakPoints;
-
-        console.log(form.responsive);
-
-        if (!form.responsive[responsiveValue]) {
-          form.responsive[responsiveValue] = defaultFormValue.columns;
-        }
-      }
-
       grid.rows = form.rows;
       grid.columns = form.columns;
       grid.gap = form.gap;
@@ -134,6 +118,7 @@ export default {
     };
 
     const showRowSpan = (index: number) => {
+      console.log(`Clicked on item ${index}`);
       open.value = open.value === index ? null : index;
 
       // Trigger reactivity by updating the entire array
