@@ -70,7 +70,7 @@ const createHtmlCode = computed(() => {
       columnDetails.colSpan[i] > 1
         ? `col-span-${columnDetails.colSpan[i]}`
         : "";
-    const className = `${rowSpan} ${colSpan}`.trim();
+    const className = '"' + `${rowSpan} ${colSpan}`.trim() + '"';
 
     items.push(
       ` <div${className ? " class=" + className : ""}>Grid Item ${i + 1}</div>`
